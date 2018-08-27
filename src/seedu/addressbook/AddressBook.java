@@ -449,7 +449,7 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<HashMap<String, String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final ArrayList<HashMap<String, String>> personsFound = getPersonsWithNameContainingAnyKeyword(convertToLower(keywords));
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
@@ -484,7 +484,8 @@ public class AddressBook {
         final ArrayList<HashMap<String, String>> matchedPersons = new ArrayList<>();
         for (HashMap<String, String> person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInNameLower = new HashSet<>(convertToLower(wordsInName));
+            if (!Collections.disjoint(wordsInNameLower, keywords)) {
                 matchedPersons.add(person);
             }
         }
@@ -1160,6 +1161,20 @@ public class AddressBook {
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
         return new ArrayList<>(Arrays.asList(toSplit.trim().split("\\s+")));
+    }
+
+    /**
+     * Converts all strings in a Collection to lowercase.
+     *
+     * @param toConvert source Collection
+     * @return convert to lowercase
+     */
+    private static ArrayList<String> convertToLower(Collection<String> toConvert) {
+        ArrayList<String> converted = new ArrayList<>();
+        for (String string: toConvert) {
+            converted.add(string.toLowerCase());
+        }
+        return converted;
     }
 
 }
